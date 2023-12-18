@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    imagePullPolicy: IfNotPresent
+    volumeMounts:
+    - name: pvc-webdav-dynamic
+      mountPath: /var/www/html
+  volumes:
+  - name: pvc-webdav-dynamic
+    persistentVolumeClaim:
+      claimName: pvc-webdav-dynamic

@@ -1,0 +1,15 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: webdav-sc
+provisioner: webdav.csi.io
+parameters:
+  share: http://172.25.16.2/remote.php/dav/files/admin
+  csi.storage.k8s.io/provisioner-secret-name: "webdav-secrect"
+  csi.storage.k8s.io/provisioner-secret-namespace: "default"
+  csi.storage.k8s.io/node-publish-secret-name: "webdav-secrect"
+  csi.storage.k8s.io/node-publish-secret-namespace: "default"
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+mountOptions:
