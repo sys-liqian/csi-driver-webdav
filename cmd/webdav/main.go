@@ -29,7 +29,7 @@ var (
 	nodeID                = flag.String("nodeid", "", "node id")
 	mountPermissions      = flag.Uint64("mount-permissions", 0, "mounted folder permissions")
 	driverName            = flag.String("drivername", "", "name of the driver")
-	workingMountDir       = flag.String("working-mount-dir", "/tmp", "working directory for provisioner to mount davfs shares temporarily")
+	workingMountDir       = flag.String("working-mount-dir", "/tmp/csi-storage", "working directory for provisioner to mount davfs shares temporarily")
 	defaultOnDeletePolicy = flag.String("default-ondelete-policy", "", "default policy for deleting subdirectory when deleting a volume")
 )
 

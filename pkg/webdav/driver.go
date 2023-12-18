@@ -17,8 +17,6 @@ limitations under the License.
 package webdav
 
 import (
-	"runtime"
-
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/sys-liqian/csi-driver-webdav/pkg/webdav/mount"
 
@@ -98,10 +96,6 @@ func (d *Driver) Run() {
 	klog.V(2).Infof("\nDRIVER INFORMATION:\n-------------------\n%s\n\nStreaming logs below:", versionMeta)
 
 	mounter := mount.New("")
-	if runtime.GOOS == "linux" {
-		// MounterForceUnmounter is only implemented on Linux now
-		mounter = mounter.(mount.MounterForceUnmounter)
-	}
 	server := NewNonBlockingGRPCServer()
 	server.Start(d.endpoint,
 		NewIdentityServer(d),

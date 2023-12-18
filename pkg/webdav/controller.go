@@ -96,12 +96,6 @@ func (c *ControllerServer) CreateVolume(ctx context.Context, req *csi.CreateVolu
 		return nil, status.Errorf(codes.Internal, fmt.Sprintf("mount failed: %v", err.Error()))
 	}
 
-	defer func() {
-		if err = umount(c.mounter, targetPath); err != nil {
-			klog.Warningf("failed to unmount src webdav server after snapshot volume copy: %v", err)
-		}
-	}()
-
 	internalVolumePath := filepath.Join(targetPath, req.Name)
 	if err = os.Mkdir(internalVolumePath, 0777); err != nil && !os.IsExist(err) {
 		return nil, status.Errorf(codes.Internal, "failed to make subdirectory: %v", err.Error())
@@ -112,6 +106,10 @@ func (c *ControllerServer) CreateVolume(ctx context.Context, req *csi.CreateVolu
 		if err = os.Chmod(internalVolumePath, os.FileMode(mountPermissions)); err != nil {
 			klog.Warningf("failed to chmod subdirectory: %v", err.Error())
 		}
+	}
+
+	if err = c.mounter.Unmount(targetPath); err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to unmount targetpath %s %v", targetPath, err)
 	}
 
 	return &csi.CreateVolumeResponse{
@@ -144,16 +142,14 @@ func (c *ControllerServer) DeleteVolume(ctx context.Context, req *csi.DeleteVolu
 		return nil, status.Errorf(codes.Internal, fmt.Sprintf("mount failed: %v", err.Error()))
 	}
 
-	defer func() {
-		if err = umount(c.mounter, targetPath); err != nil {
-			klog.Warningf("failed to unmount src webdav server after snapshot volume copy: %v", err)
-		}
-	}()
-
 	internalVolumePath := filepath.Join(targetPath, subDir)
 	klog.V(2).Infof("Removing subdirectory at %v", internalVolumePath)
 	if err = os.RemoveAll(internalVolumePath); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to delete subdirectory: %v", err.Error())
+	}
+
+	if err = c.mounter.Unmount(targetPath); err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to unmount targetpath %s %v", targetPath, err)
 	}
 
 	return &csi.DeleteVolumeResponse{}, nil

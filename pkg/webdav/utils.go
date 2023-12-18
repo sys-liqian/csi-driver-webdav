@@ -21,10 +21,8 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
-	"github.com/sys-liqian/csi-driver-webdav/pkg/webdav/mount"
 	"google.golang.org/grpc"
 	"k8s.io/klog/v2"
 )
@@ -92,16 +90,4 @@ func ParseVolumeId(volumeId string) (webdavSharePath, subDir string, err error) 
 		return "", "", errors.New("invalid volumeId")
 	}
 	return arr[0], arr[1], nil
-}
-
-func umount(mounter mount.Interface, path string) (err error) {
-	extensiveMountPointCheck := true
-	forceUnmounter, ok := mounter.(mount.MounterForceUnmounter)
-	if ok {
-		klog.V(2).Infof("force unmount %s", path)
-		err = mount.CleanupMountWithForce(path, forceUnmounter, extensiveMountPointCheck, 30*time.Second)
-	} else {
-		err = mount.CleanupMountPoint(path, mounter, extensiveMountPointCheck)
-	}
-	return
 }

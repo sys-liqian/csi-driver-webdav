@@ -79,7 +79,7 @@ spec:
           securityContext:
             privileged: true
             capabilities:
-              add: ["ALL"]
+              add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
           args:
             - "-v=5"
