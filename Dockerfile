@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM ubuntu:20.04
+FROM centos:centos7.9.2009
 
 ARG binary=./bin/webdavplugin
 COPY ${binary} /webdavplugin
 
-RUN apt update && apt install -y davfs2=1.5.5-1
+RUN yum install epel-release -y && yum update -y && yum install davfs2 -y
 
 ENTRYPOINT ["/webdavplugin"]

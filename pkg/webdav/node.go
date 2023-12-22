@@ -19,7 +19,6 @@ package webdav
 import (
 	"context"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
@@ -84,7 +83,7 @@ func (n *NodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublish
 		return &csi.NodePublishVolumeResponse{}, nil
 	}
 
-	sourcePath := filepath.Join(address, subDir)
+	sourcePath := strings.Join([]string{address, subDir}, "/")
 	stdin := []string{req.GetSecrets()[secretUsernameKey], req.GetSecrets()[secretPasswordKey]}
 	klog.V(2).Infof("NodePublishVolume: volumeID(%v) source(%s) targetPath(%s) mountflags(%v)", volumeID, sourcePath, targetPath, mountOptions)
 	err = n.mounter.MountSensitiveWithStdin(sourcePath, targetPath, fstype, mountOptions, nil, stdin)
