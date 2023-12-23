@@ -101,15 +101,17 @@ func (c *ControllerServer) CreateVolume(ctx context.Context, req *csi.CreateVolu
 		return nil, status.Errorf(codes.Internal, "failed to make subdirectory: %v", err.Error())
 	}
 
+	defer func() {
+		if err = c.mounter.Unmount(targetPath); err != nil {
+			klog.Warningf("failed to unmount targetpath %s: %v", targetPath, err.Error())
+		}
+	}()
+
 	if mountPermissions > 0 {
 		// Reset directory permissions because of umask problems
 		if err = os.Chmod(internalVolumePath, os.FileMode(mountPermissions)); err != nil {
 			klog.Warningf("failed to chmod subdirectory: %v", err.Error())
 		}
-	}
-
-	if err = c.mounter.Unmount(targetPath); err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to unmount targetpath %s %v", targetPath, err)
 	}
 
 	return &csi.CreateVolumeResponse{
@@ -142,14 +144,16 @@ func (c *ControllerServer) DeleteVolume(ctx context.Context, req *csi.DeleteVolu
 		return nil, status.Errorf(codes.Internal, fmt.Sprintf("mount failed: %v", err.Error()))
 	}
 
+	defer func() {
+		if err = c.mounter.Unmount(targetPath); err != nil {
+			klog.Warningf("failed to unmount targetpath %s: %v", targetPath, err.Error())
+		}
+	}()
+
 	internalVolumePath := filepath.Join(targetPath, subDir)
 	klog.V(2).Infof("Removing subdirectory at %v", internalVolumePath)
 	if err = os.RemoveAll(internalVolumePath); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to delete subdirectory: %v", err.Error())
-	}
-
-	if err = c.mounter.Unmount(targetPath); err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to unmount targetpath %s %v", targetPath, err)
 	}
 
 	return &csi.DeleteVolumeResponse{}, nil
