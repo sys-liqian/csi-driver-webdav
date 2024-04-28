@@ -5,7 +5,8 @@ metadata:
   name: webdav-sc
 provisioner: webdav.csi.io
 parameters:
-  share: http://172.25.16.2:5244/dav/data
+  # alist folder webdav address
+  share: http://ip:port/dav/media 
   csi.storage.k8s.io/provisioner-secret-name: "webdav-secrect"
   csi.storage.k8s.io/provisioner-secret-namespace: "default"
   csi.storage.k8s.io/node-publish-secret-name: "webdav-secrect"

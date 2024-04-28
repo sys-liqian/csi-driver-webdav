@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM centos:centos7.9.2009
+FROM debian:bullseye
 
 ARG binary=./bin/webdavplugin
 COPY ${binary} /webdavplugin
 
-RUN yum install epel-release -y && yum update -y && yum install davfs2 -y
+RUN apt update && apt install -y davfs2
 
 ENTRYPOINT ["/webdavplugin"]
