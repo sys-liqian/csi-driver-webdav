@@ -12,6 +12,6 @@ LOCAL_REPOSITORY ?= localhost:5000
 go-build:
 	CGO_ENABLED=0 GOOS=linux GOARCH=$(ARCH) go build -a -ldflags "${LDFLAGS} ${EXT_LDFLAGS}" -o bin/webdavplugin ./cmd/webdav
 
-.PHONY: build-local-image
-build-local-image:
+.PHONY: docker-build
+docker-build: go-build
 	docker build --network host -t $(LOCAL_REPOSITORY)/webdavplugin:$(IMAGE_VERSION) .
