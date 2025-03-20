@@ -35,6 +35,7 @@ import (
 type ControllerServer struct {
 	*Driver
 	mounter mount.Interface
+	csi.UnimplementedControllerServer
 }
 
 func NewControllerServer(d *Driver, mounter mount.Interface) *ControllerServer {
