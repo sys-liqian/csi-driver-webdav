@@ -1,0 +1,8 @@
+stages:
+  - build
+
+build go binary:
+  stage: build
+  image: golang:1.24-bookworm
+  script:
+    - make go-build
