@@ -1,5 +1,6 @@
 stages:
   - build
+  - package
 
 build go binary:
   stage: build
@@ -11,7 +12,7 @@ build go binary:
       - bin/webdavplugin
 
 build docker image:
-  stage: build
+  stage: package
   image:
     name: gcr.io/kaniko-project/executor:v1.23.2-debug
     entrypoint: [""]
