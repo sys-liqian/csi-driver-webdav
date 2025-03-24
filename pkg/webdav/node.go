@@ -32,6 +32,7 @@ import (
 type NodeServer struct {
 	Driver  *Driver
 	mounter mount.Interface
+	csi.UnimplementedNodeServer
 }
 
 func NewNodeServer(d *Driver, mounter mount.Interface) *NodeServer {

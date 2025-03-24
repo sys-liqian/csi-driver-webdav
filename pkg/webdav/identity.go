@@ -27,6 +27,7 @@ import (
 
 type IdentityServer struct {
 	Driver *Driver
+	csi.UnimplementedIdentityServer
 }
 
 func NewIdentityServer(d *Driver) *IdentityServer {
