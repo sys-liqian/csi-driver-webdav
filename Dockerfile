@@ -17,6 +17,13 @@ FROM debian:bookworm
 ARG binary=./bin/webdavplugin
 COPY ${binary} /webdavplugin
 
-RUN apt update && apt install -y davfs2
+RUN echo "deb http://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free" > /etc/apt/sources.list \
+&& echo "deb http://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free" >> /etc/apt/sources.list \
+&& echo "deb http://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free" >> /etc/apt/sources.list \
+&& echo "deb http://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free" >> /etc/apt/sources.list \
+&& apt update \
+&& apt install -y davfs2 ca-certificates \
+&& ln -sf /proc/mounts /etc/mtab \
+&& echo "ignore_dav_header 1" >> /etc/davfs2/davfs2.conf
 
 ENTRYPOINT ["/webdavplugin"]
